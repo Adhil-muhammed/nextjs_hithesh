@@ -13,7 +13,6 @@ const initSignup = {
 
 const SignUPPage = () => {
   const [user, setUser] = useImmer(initSignup);
-  console.log("user: ", user);
 
   const onSignup = async () => {};
 
@@ -29,7 +28,7 @@ const SignUPPage = () => {
       <h1 className="text-white text-2xl">singup</h1>
       <label htmlFor="userName">Username</label>
       <input
-        className="text-gray-900"
+        className="text-gray-900 p-2 rounded-md "
         type="text"
         name="userName"
         placeholder="username"
@@ -38,7 +37,7 @@ const SignUPPage = () => {
       />
       <label htmlFor="userName">Email</label>
       <input
-        className="text-gray-900"
+        className="text-gray-900 p-2 rounded-md"
         type="text"
         name="email"
         placeholder="email"
@@ -47,7 +46,7 @@ const SignUPPage = () => {
       />
       <label htmlFor="userName">PassWord</label>
       <input
-        className="text-gray-900"
+        className="text-gray-900 p-2 rounded-md"
         type="text"
         name="password"
         placeholder="password"
