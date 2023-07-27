@@ -7,14 +7,21 @@ import { useRouter } from "next/navigation";
 
 const initSignup = {
   email: "",
-  userName: "",
+  username: "",
   password: "",
 };
 
 const SignUPPage = () => {
   const [user, setUser] = useImmer(initSignup);
 
-  const onSignup = async () => {};
+  const onSignup = async () => {
+    try {
+      const res = await axios.post("/api/user/signup", user);
+      console.log("res: ", res.data);
+    } catch (error: any) {
+      console.log("error: ", error.message);
+    }
+  };
 
   const onChange = (e: any) => {
     const { value, name } = e.target;
@@ -30,9 +37,9 @@ const SignUPPage = () => {
       <input
         className="text-gray-900 p-2 rounded-md "
         type="text"
-        name="userName"
+        name="username"
         placeholder="username"
-        value={user?.userName}
+        value={user?.username}
         onChange={onChange}
       />
       <label htmlFor="userName">Email</label>
@@ -54,7 +61,10 @@ const SignUPPage = () => {
         onChange={onChange}
       />
       <div className="flex flex-col gap-3">
-        <button className="p-2 border-slate-50 rounded-md bg-slate-700 text-white">
+        <button
+          className="p-2 border-slate-50 rounded-md bg-slate-700 text-white"
+          onClick={onSignup}
+        >
           signUp
         </button>
         <Link href={"/login"}>visit login page</Link>
