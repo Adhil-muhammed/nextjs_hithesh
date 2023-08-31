@@ -3,6 +3,7 @@ import React from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useImmer } from "use-immer";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 const initSignup = {
@@ -10,10 +11,31 @@ const initSignup = {
   password: "",
 };
 
+interface LoggedUser {
+  email: string;
+  password: string;
+}
+
 export default function page() {
+  const navigate = useRouter();
   const [user, setUser] = useImmer(initSignup);
 
-  const onLogin = async () => {};
+  const toLogin = async (user: LoggedUser) => {
+    const res = await axios.post("/api/user/login", user);
+    return res?.data;
+  };
+
+  const handleLogin = useMutation({
+    mutationFn: toLogin,
+    mutationKey: ["LoggedData"],
+    onSuccess: () => {
+      navigate.push("/profile");
+    },
+  });
+
+  const onLogin = async () => {
+    handleLogin.mutate(user);
+  };
 
   const onChange = (e: any) => {
     const { value, name } = e.target;
@@ -44,7 +66,10 @@ export default function page() {
         onChange={onChange}
       />
       <div className="flex flex-col gap-3">
-        <button className="p-2 border-slate-50 rounded-md bg-slate-700 text-white">
+        <button
+          className="p-2 border-slate-50 rounded-md bg-slate-700 text-white"
+          onClick={onLogin}
+        >
           Login
         </button>
         <Link href={"/signup"}>visit sigUp page</Link>

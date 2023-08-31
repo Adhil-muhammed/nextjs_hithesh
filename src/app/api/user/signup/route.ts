@@ -10,7 +10,6 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json();
     const { username, password, email } = reqBody;
 
-    console.log("reqBody", reqBody);
     const user = await User.findOne({
       $or: [{ email }, { username }],
     });
@@ -28,10 +27,9 @@ export async function POST(request: NextRequest) {
     const newUser = await new User({ email, username, password: hashPassword });
 
     const savedUser = await newUser.save();
-    console.log("savedUser: ", savedUser);
 
     return NextResponse.json(
-      { message: "user saved successfully" },
+      { message: "user saved successfully", savedUser },
       { status: 200 }
     );
   } catch (error: any) {
