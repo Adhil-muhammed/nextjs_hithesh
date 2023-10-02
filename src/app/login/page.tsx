@@ -3,10 +3,10 @@ import React from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useImmer } from "use-immer";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const initSignup = {
@@ -77,9 +77,9 @@ export default function page() {
         >
           Login
         </LoadingButton>
-        <Button variant="outlined">
-          <Link href={"/signup"}>visit sigUp page</Link>
-        </Button>
+        <Link href={"/signup"}>
+          <Button variant="outlined">visit sigUp page</Button>
+        </Link>
       </div>
     </div>
   );
