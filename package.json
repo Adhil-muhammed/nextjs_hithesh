@@ -12,8 +12,9 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.7",
+    "@mui/lab": "^5.0.0-alpha.146",
     "@mui/material": "^5.14.7",
-    "@tanstack/react-query-next-experimental": "^5.0.0-alpha.80",
+    "@tanstack/react-query": "^4.35.7",
     "@types/node": "20.4.1",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.7",
@@ -24,7 +25,7 @@
     "eslint-config-next": "13.4.9",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.3.4",
-    "next": "13.4.9",
+    "next": "^13.5.3",
     "nodemailer": "^6.9.3",
     "postcss": "8.4.25",
     "react": "18.2.0",
@@ -38,5 +39,9 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/mongoose": "^5.11.97"
-  }
+  },
+  "description": "This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",
+  "main": "next.config.js",
+  "author": "",
+  "license": "ISC"
 }

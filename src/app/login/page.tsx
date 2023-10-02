@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useImmer } from "use-immer";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { Button } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const initSignup = {
   email: "",
@@ -66,13 +69,17 @@ export default function page() {
         onChange={onChange}
       />
       <div className="flex flex-col gap-3">
-        <button
-          className="p-2 border-slate-50 rounded-md bg-slate-700 text-white"
+        <LoadingButton
+          variant={"outlined"}
+          loading={handleLogin?.isLoading}
+          loadingIndicator={<CircularProgress variant="indeterminate" />}
           onClick={onLogin}
         >
           Login
-        </button>
-        <Link href={"/signup"}>visit sigUp page</Link>
+        </LoadingButton>
+        <Button variant="outlined">
+          <Link href={"/signup"}>visit sigUp page</Link>
+        </Button>
       </div>
     </div>
   );
