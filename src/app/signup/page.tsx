@@ -61,14 +61,6 @@ const SignUPPage = () => {
     });
   };
 
-  if (createUser?.isLoading) {
-    return (
-      <Stack className="flex h-screen justify-center items-center">
-        <CircularProgress variant="indeterminate" />
-      </Stack>
-    );
-  }
-
   return (
     <>
       <div className="text-center  flex flex-col justify-center items-center min-h-screen py-2 gap-3">
@@ -110,11 +102,13 @@ const SignUPPage = () => {
             signUp
           </LoadingButton>
         </div>
-        <Link href={"/login"} className="flex- justify-center ite">
-          <Button variant="outlined" className="px-12">
-            visit login page
-          </Button>
-        </Link>
+        <Button
+          variant="outlined"
+          className="w-60"
+          onClick={() => navigate.push("/login")}
+        >
+          visit login page
+        </Button>
       </div>
     </>
   );

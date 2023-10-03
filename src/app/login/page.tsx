@@ -77,10 +77,14 @@ export default function page() {
         >
           Login
         </LoadingButton>
-        <Link href={"/signup"}>
-          <Button variant="outlined">visit sigUp page</Button>
-        </Link>
       </div>
+      <Button
+        variant="outlined"
+        className="w-60"
+        onClick={() => navigate.push("/signup")}
+      >
+        visit sigUp page
+      </Button>
     </div>
   );
 }
