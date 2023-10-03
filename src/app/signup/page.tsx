@@ -2,14 +2,12 @@
 
 import React from "react";
 import axios from "axios";
-import Link from "next/link";
 import { useImmer } from "use-immer";
 import { Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Stack } from "@mui/material";
 
 const initSignup = {
   email: "",
