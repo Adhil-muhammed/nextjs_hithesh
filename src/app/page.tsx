@@ -12,6 +12,9 @@ export default function Home() {
           <Link href={"/signup"} className="underline ml-1 text-blue-900">
             the pages
           </Link>
+          <Link href={"/profile"} className="underline ml-1 text-blue-900">
+            Go to profile
+          </Link>
         </span>
       </div>
     </div>

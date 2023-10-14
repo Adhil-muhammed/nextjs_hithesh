@@ -8,7 +8,7 @@ connection();
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    const { username, password, email } = reqBody;
+    const { username, password, email, firstName, lastName } = reqBody;
 
     const user = await User.findOne({
       $or: [{ email }, { username }],
@@ -24,7 +24,13 @@ export async function POST(request: NextRequest) {
     const salt = await bcryptjs.genSalt(10);
     const hashPassword = await bcryptjs.hash(password, salt);
 
-    const newUser = await new User({ email, username, password: hashPassword });
+    const newUser = await new User({
+      firstName,
+      lastName,
+      email,
+      username,
+      password: hashPassword,
+    });
 
     const savedUser = await newUser.save();
 

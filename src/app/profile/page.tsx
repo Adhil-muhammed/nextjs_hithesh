@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const ProfilePage = () => {
@@ -24,6 +25,12 @@ const ProfilePage = () => {
       >
         Log out
       </button>
+      <Link
+        href={"/"}
+        className="p-2 bg-purple-600 mt-3 rounded-md text-white hover:bg-purple-700"
+      >
+        Home
+      </Link>
     </div>
   );
 };

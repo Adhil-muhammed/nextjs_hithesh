@@ -2,11 +2,25 @@
 import React from "react";
 import axios from "axios";
 import { useImmer } from "use-immer";
-import { Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {
+  Box,
+  Link,
+  Grid,
+  Button,
+  Avatar,
+  Checkbox,
+  Container,
+  TextField,
+  Typography,
+  CssBaseline,
+  FormControlLabel,
+} from "@mui/material";
 
 const initSignup = {
   email: "",
@@ -18,9 +32,32 @@ interface LoggedUser {
   password: string;
 }
 
+const defaultTheme = createTheme();
+
+function Copyright(props: any) {
+  return (
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
+      <Link color="inherit" href="https://mui.com/">
+        Your Website
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
+
 export default function page() {
   const navigate = useRouter();
   const [user, setUser] = useImmer(initSignup);
+  const [isSHowPassword, setIsSHowPassword] = useImmer(false);
+
+  console.log("user: ", user);
 
   const toLogin = async (user: LoggedUser) => {
     const res = await axios.post("/api/user/login", user);
@@ -31,7 +68,7 @@ export default function page() {
     mutationFn: toLogin,
     mutationKey: ["LoggedData"],
     onSuccess: () => {
-      navigate.push("/profile");
+      navigate.push("/profile", { require: true });
     },
   });
 
@@ -46,44 +83,97 @@ export default function page() {
     });
   };
 
+  const onHandleShowPassword = (e: any) => {
+    setIsSHowPassword(e.target.checked);
+  };
+
   return (
-    <div className="text-center  flex flex-col justify-center items-center min-h-screen py-2 gap-3">
-      <h1 className="text-white text-2xl">Login</h1>
-      <label htmlFor="userName">Email</label>
-      <input
-        className="text-gray-900 p-2 rounded-md"
-        type="text"
-        name="email"
-        placeholder="email"
-        value={user?.email}
-        onChange={onChange}
-      />
-      <label htmlFor="userName">PassWord</label>
-      <input
-        className="text-gray-900 p-2 rounded-md"
-        type="text"
-        name="password"
-        placeholder="password"
-        value={user?.password}
-        onChange={onChange}
-      />
-      <div className="flex flex-col gap-3">
-        <LoadingButton
-          variant={"outlined"}
-          loading={handleLogin?.isLoading}
-          loadingIndicator={<CircularProgress variant="indeterminate" />}
-          onClick={onLogin}
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
         >
-          Login
-        </LoadingButton>
-      </div>
-      <Button
-        variant="outlined"
-        className="w-60"
-        onClick={() => navigate.push("/signup")}
-      >
-        visit sigUp page
-      </Button>
-    </div>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              inputProps={{
+                autocomplete: "new-email",
+                form: {
+                  autocomplete: "off",
+                },
+              }}
+              autoFocus
+              onChange={onChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type={isSHowPassword ? "text" : "password"}
+              id="password"
+              inputProps={{
+                autocomplete: "new-password",
+                form: {
+                  autocomplete: "off",
+                },
+              }}
+              onChange={onChange}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  value="remember"
+                  color="primary"
+                  onClick={onHandleShowPassword}
+                />
+              }
+              label="show"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              className="bg-sky-600"
+              onClick={onLogin}
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="/signup" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Copyright sx={{ mt: 8, mb: 4 }} />
+      </Container>
+    </ThemeProvider>
   );
 }
