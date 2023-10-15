@@ -57,8 +57,6 @@ export default function page() {
   const [user, setUser] = useImmer(initSignup);
   const [isSHowPassword, setIsSHowPassword] = useImmer(false);
 
-  console.log("user: ", user);
-
   const toLogin = async (user: LoggedUser) => {
     const res = await axios.post("/api/user/login", user);
     return res?.data;
@@ -68,7 +66,7 @@ export default function page() {
     mutationFn: toLogin,
     mutationKey: ["LoggedData"],
     onSuccess: () => {
-      navigate.push("/profile", { require: true });
+      navigate.push("/");
     },
   });
 
@@ -133,7 +131,8 @@ export default function page() {
               inputProps={{
                 autocomplete: "new-password",
                 form: {
-                  autocomplete: "off",
+                  autocomplete: "new-password",
+                  // autocomplete: "off",
                 },
               }}
               onChange={onChange}

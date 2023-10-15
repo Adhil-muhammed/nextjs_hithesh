@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    default: "",
+    required: [true, "Why no bacon?"],
   },
   lastName: {
     type: String,
@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, "please provide a email password"],
+    required: [true, "please provide a password"],
     unique: true,
   },
   isVerified: {

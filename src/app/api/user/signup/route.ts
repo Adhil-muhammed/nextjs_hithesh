@@ -25,10 +25,10 @@ export async function POST(request: NextRequest) {
     const hashPassword = await bcryptjs.hash(password, salt);
 
     const newUser = await new User({
-      firstName,
-      lastName,
       email,
       username,
+      firstName,
+      lastName,
       password: hashPassword,
     });
 
