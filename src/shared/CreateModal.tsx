@@ -15,8 +15,15 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 export const CreateModal = (props: any) => {
-  const { open, handleClose } = props;
-  console.log("open: ", open);
+  const {
+    open,
+    onChange,
+    onConfirm,
+    isLoading,
+    handleClose,
+    onUploadFile,
+    createCategory,
+  } = props;
 
   return (
     <div>
@@ -51,15 +58,34 @@ export const CreateModal = (props: any) => {
                     id="outlined-basic"
                     label="Name*"
                     fullWidth
+                    name="title"
                     variant="outlined"
+                    autoComplete="off"
+                    value={createCategory?.title}
+                    onChange={onChange}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <TextField
                     id="outlined-basic"
+                    name="discription"
                     label="Description*"
                     fullWidth
                     variant="outlined"
+                    autoComplete="off"
+                    value={createCategory?.discription}
+                    onChange={onChange}
+                  />
+                </Grid>
+                <Grid item xs={12} className="justify-center">
+                  <TextField
+                    onChange={onUploadFile}
+                    id="outlined-basic"
+                    fullWidth
+                    type="file"
+                    // value={createCategory?.image}
+                    variant="outlined"
+                    autoComplete="off"
                   />
                 </Grid>
               </Grid>
@@ -70,7 +96,12 @@ export const CreateModal = (props: any) => {
           <Button variant="outlined" color="error" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="outlined" onClick={handleClose} autoFocus>
+          <Button
+            disabled={isLoading}
+            variant="outlined"
+            onClick={onConfirm}
+            autoFocus
+          >
             Save
           </Button>
         </DialogActions>

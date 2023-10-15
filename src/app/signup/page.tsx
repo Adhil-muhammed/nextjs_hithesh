@@ -75,7 +75,6 @@ const SignUPPage = () => {
   const navigate = useRouter();
   const [user, setUser] = useImmer(initSignup);
   const [isSHowPassword, setIsSHowPassword] = useImmer(false);
-  console.log("user: ", user);
 
   const userData = useQuery({
     queryKey: ["user"],
