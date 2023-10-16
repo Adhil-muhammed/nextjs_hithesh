@@ -7,9 +7,7 @@ connection();
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request?.json();
-
     const { title, discription, image } = reqBody;
-
     const alreadyExists = await Product.findOne({ title });
 
     if (alreadyExists) {
@@ -24,7 +22,6 @@ export async function POST(request: NextRequest) {
       image,
       discription,
     });
-
     const savedProduct = await newProduct.save();
 
     return NextResponse.json(
@@ -40,6 +37,7 @@ export async function GET(request: NextRequest) {
   try {
     const product = await Product?.find();
     const totalCount = await Product?.countDocuments();
+
     return NextResponse.json({ product, totalCount }, { status: 200 });
   } catch (error: any) {
     console.log("error: ", error);
@@ -54,6 +52,7 @@ export async function PUT(request: NextRequest, { params }: any) {
       { _id: reqBody?._id },
       reqBody
     );
+
     return NextResponse.json({ updatedProduct: product }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ message: error?.message }, { status: 800 });
