@@ -50,13 +50,12 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest, { params }: any) {
   try {
     const reqBody = await request?.json();
-    console.log("reqBody: ", reqBody);
-    const product = await Product?.findOneAndUpdate(reqBody, reqBody, {
-      new: true,
-    });
+    const product = await Product?.findOneAndUpdate(
+      { _id: reqBody?._id },
+      reqBody
+    );
     return NextResponse.json({ updatedProduct: product }, { status: 200 });
   } catch (error: any) {
-    console.log("error: ", error);
     return NextResponse.json({ message: error?.message }, { status: 800 });
   }
 }
