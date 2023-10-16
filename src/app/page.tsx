@@ -3,9 +3,9 @@ import * as React from "react";
 import axios from "axios";
 import { useImmer } from "use-immer";
 import { Stack, Button, Container } from "@mui/material";
-import { InputFileUpload } from "@/shared/FIleUpload";
-import { CreateModal } from "@/shared/CreateModal";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { InputFileUpload, CreateModal, Loader } from "@/shared";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { isArray } from "util";
 
 const initCreateCategory = {
   title: "",
@@ -15,7 +15,7 @@ const initCreateCategory = {
 
 interface Category {
   title: string;
-  image: string;
+  image: any;
   discription: string;
 }
 
@@ -24,13 +24,45 @@ const fetchData = async (Newcategory: Category) => {
   return res.data;
 };
 
+const listAllCategory = async () => {
+  const res = await axios.get("api/product");
+  return res.data;
+};
+
 export default function MainPage() {
+  const queryClient = useQueryClient();
   const [open, setOpen] = useImmer(false);
-  const [selectedFile, setSelectedFile] = useImmer(false);
+  const [isFetch, setIsFetch] = useImmer(false);
+  console.log("isFetch: ", isFetch);
   const [createCategory, setCreateCategory] = useImmer(initCreateCategory);
-  console.log("createCategory: ", createCategory);
+
+  const userData = useQuery({
+    queryKey: ["category"],
+    queryFn: listAllCategory,
+    enabled: isFetch,
+    onSuccess: (data) => {
+      const { product } = data;
+      product?.forEach((element: any) => {
+        if (element?.image instanceof Blob) {
+          // Check if the image is a Blob (assuming it was created using createObjectURL)
+          URL.revokeObjectURL(element?.image);
+        }
+      });
+    },
+  });
+
+  const { isLoading } = userData;
+  const { product } = userData?.data ?? !isLoading;
+
+  React?.useEffect(() => {
+    setIsFetch(true);
+    return () => {
+      setIsFetch(false);
+    };
+  }, []);
 
   const handleClickOpen = () => {
+    setCreateCategory(initCreateCategory);
     setOpen(true);
   };
 
@@ -39,8 +71,8 @@ export default function MainPage() {
   };
 
   const onUploadFile = (e: any) => {
-    setCreateCategory((draft: Category) => {
-      draft.image = URL.createObjectURL(e.target.files[0]);
+    setCreateCategory((draft: any) => {
+      draft.image = URL.createObjectURL(e?.target?.files[0]);
       return draft;
     });
   };
@@ -55,13 +87,18 @@ export default function MainPage() {
   const createNewCategory = useMutation({
     mutationFn: fetchData,
     onSuccess: (data, variables, context) => {
-      // navigate.push("/login");
+      queryClient?.invalidateQueries(["category"]);
+      setOpen(false);
     },
   });
 
   const onCreateCategory = async () => {
     createNewCategory?.mutate(createCategory);
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -97,28 +134,38 @@ export default function MainPage() {
             </Stack>
           </Stack>
         </Stack>
+
         <Stack mt={2} p={2}>
-          <Stack
-            gap={10}
-            direction={"row"}
-            alignItems={"center"}
-            justifyContent={"space-evenly"}
-          >
-            <div>no:1</div>
-            <div>
-              <span>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
-                error reiciendis minima obcaecati sequi, blanditiis distinctio!
-                Molestias quos dignissimos expedita a tempore error doloremque
-              </span>
-            </div>
-            <Stack direction={"row"} gap={3}>
-              <Button variant="outlined">edit</Button>
-              <Button variant="outlined" color="error">
-                Delete
-              </Button>
-            </Stack>
-          </Stack>
+          {product?.map((category: any, index: Number) => {
+            return (
+              <Stack
+                gap={10}
+                direction={"row"}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+                key={category?._id}
+              >
+                <Stack>{`no:${index}`}</Stack>
+                <Stack>{category?.title}</Stack>
+                <Stack>{category?.discription}</Stack>
+                {/* <div>
+                  {category?.image && (
+                    <img
+                      src={category?.image}
+                      alt=""
+                      className="uploaded-img"
+                    />
+                  )}
+                </div> */}
+                <Stack direction={"row"} gap={3} alignItems={"center"}>
+                  <Button variant="outlined">edit</Button>
+                  <Button variant="outlined" color="error">
+                    Delete
+                  </Button>
+                </Stack>
+              </Stack>
+            );
+          })}
         </Stack>
       </Container>
       <CreateModal

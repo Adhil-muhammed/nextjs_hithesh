@@ -32,7 +32,6 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
-    console.log("error: ", error);
     return NextResponse.json({ message: error?.message }, { status: 500 });
   }
 }
@@ -40,7 +39,8 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const product = await Product?.find();
-    return NextResponse.json({ product }, { status: 200 });
+    const totalCount = await Product?.countDocuments();
+    return NextResponse.json({ product, totalCount }, { status: 200 });
   } catch (error: any) {
     console.log("error: ", error);
     return NextResponse.json({ message: error?.message }, { status: 500 });

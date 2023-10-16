@@ -13,7 +13,10 @@ const ProductSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   image: {
     type: String,
-    required: [true, "please provide"],
+    // required: [
+    //   true,
+    //   "Data cannot be created without specifying the image type",
+    // ],
   },
 });
 

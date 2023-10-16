@@ -33,7 +33,7 @@ export const CreateModal = (props: any) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Create new category"}
+          <span className="font-semibold">Create new category</span>
         </DialogTitle>
         <Divider sx={{ marginTop: 1 }} />
         <IconButton
@@ -83,7 +83,7 @@ export const CreateModal = (props: any) => {
                     id="outlined-basic"
                     fullWidth
                     type="file"
-                    // value={createCategory?.image}
+                    inputProps={{ accept: "image/*" }}
                     variant="outlined"
                     autoComplete="off"
                   />

@@ -28,6 +28,5 @@ export const config = {
     "/profile",
     "/verifyemail",
     "/profile/:id*",
-    "/landingPage",
   ],
 };
