@@ -5,7 +5,6 @@ import { useImmer } from "use-immer";
 import { Stack, Button, Container } from "@mui/material";
 import { InputFileUpload, CreateModal, Loader } from "@/shared";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { isArray } from "util";
 
 const initCreateCategory = {
   title: "",
@@ -29,37 +28,57 @@ const listAllCategory = async () => {
   return res.data;
 };
 
+const getProductsById = async (id: any) => {
+  const res = await axios.get(`api/product/${id}`);
+  return res.data;
+};
+
+const updateProducts = async (product: any) => {
+  const res = await axios.put(`api/product`, product);
+  return res.data;
+};
+
+const deleteCategories = async (id: String) => {
+  const res = await axios.delete(`api/product/${id}`);
+  return res.data;
+};
+
 export default function MainPage() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useImmer(false);
-  const [isFetch, setIsFetch] = useImmer(false);
-  console.log("isFetch: ", isFetch);
+  const [productId, setProductId] = useImmer(null);
   const [createCategory, setCreateCategory] = useImmer(initCreateCategory);
+  // console.log("createCategory: ", createCategory);
 
   const userData = useQuery({
     queryKey: ["category"],
     queryFn: listAllCategory,
-    enabled: isFetch,
-    onSuccess: (data) => {
-      const { product } = data;
-      product?.forEach((element: any) => {
-        if (element?.image instanceof Blob) {
-          // Check if the image is a Blob (assuming it was created using createObjectURL)
-          URL.revokeObjectURL(element?.image);
-        }
-      });
-    },
+    enabled: true,
   });
 
-  const { isLoading } = userData;
-  const { product } = userData?.data ?? !isLoading;
+  const getProductById = useQuery({
+    queryKey: ["categoryByID", productId],
+    queryFn: () => getProductsById(productId),
+    onSuccess: (data) => {
+      onUpdateProduct(data);
+    },
+    enabled: productId !== null,
+  });
 
-  React?.useEffect(() => {
-    setIsFetch(true);
-    return () => {
-      setIsFetch(false);
-    };
-  }, []);
+  React.useEffect(() => {
+    if (getProductById?.data) {
+      setCreateCategory(getProductById?.data);
+    }
+  }, [getProductById?.data]);
+
+  // React.useEffect(() => {
+  //   if (productId) {
+  //     onUpdateProduct();
+  //   }
+  // }, [productId]);
+
+  const { isLoading } = userData;
+  const { product, totalCount } = userData?.data ?? !isLoading;
 
   const handleClickOpen = () => {
     setCreateCategory(initCreateCategory);
@@ -92,8 +111,36 @@ export default function MainPage() {
     },
   });
 
+  const updateProduct = useMutation({
+    mutationFn: updateProducts,
+    onSuccess: (data, variables, context) => {
+      // queryClient?.invalidateQueries(["category"]);
+    },
+  });
+
+  const deleteCategory = useMutation({
+    mutationFn: deleteCategories,
+    onSuccess: (data, variables, context) => {
+      queryClient?.invalidateQueries(["category"]);
+    },
+  });
+
   const onCreateCategory = async () => {
     createNewCategory?.mutate(createCategory);
+  };
+
+  const onDeleteCategory = (id: String) => {
+    deleteCategory?.mutate(id);
+  };
+
+  const onHandleProductID = (id: any) => {
+    setProductId(id);
+  };
+
+  const onUpdateProduct = (data: any) => {
+    console.log("function call");
+
+    updateProduct?.mutate(data);
   };
 
   if (isLoading) {
@@ -120,7 +167,7 @@ export default function MainPage() {
             alignItems={"center"}
             justifyContent={"space-between"}
           >
-            <span>Total Count</span>
+            <span>Total Count:{totalCount}</span>
             <Stack
               gap={3}
               direction={"row"}
@@ -144,6 +191,7 @@ export default function MainPage() {
                 alignItems={"center"}
                 justifyContent={"space-between"}
                 key={category?._id}
+                className="sm:overflow-x-scroll"
               >
                 <Stack>{`no:${index}`}</Stack>
                 <Stack>{category?.title}</Stack>
@@ -158,8 +206,17 @@ export default function MainPage() {
                   )}
                 </div> */}
                 <Stack direction={"row"} gap={3} alignItems={"center"}>
-                  <Button variant="outlined">edit</Button>
-                  <Button variant="outlined" color="error">
+                  <Button
+                    variant="outlined"
+                    onClick={() => onHandleProductID(category?._id)}
+                  >
+                    edit
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => onDeleteCategory(category?._id)}
+                  >
                     Delete
                   </Button>
                 </Stack>
